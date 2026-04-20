@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        :root {
+            --bg-top: #130720;
+            --bg-bottom: #3a1246;
+            --card: rgba(255, 255, 255, 0.12);
+            --card-strong: rgba(255, 255, 255, 0.18);
+            --text: #fff4f8;
+            --muted: #edd8e7;
+            --pink: #ff5f8f;
+            --peach: #ffae6d;
+            --yellow: #ffd75c;
+            --blue: #77d7ff;
+            --line: rgba(255, 255, 255, 0.12);
+            --shadow: 0 28px 80px rgba(16, 3, 25, 0.38);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(255, 215, 92, 0.14), transparent 26%),
+                radial-gradient(circle at right, rgba(119, 215, 255, 0.14), transparent 28%),
+                linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            overflow-x: hidden;
+            padding: 24px;
+            position: relative;
+        }
+
+        .background-glow {
+            position: fixed;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            filter: blur(24px);
+            opacity: 0.38;
+            z-index: 0;
+        }
+
+        .background-glow-one {
+            top: -90px;
+            left: -60px;
+            background: rgba(255, 95, 143, 0.48);
+        }
+
+        .background-glow-two {
+            right: -90px;
+            bottom: -90px;
+            background: rgba(119, 215, 255, 0.24);
+        }
+
+        .birthday-page {
+            position: relative;
+            z-index: 1;
+            max-width: 1080px;
+            margin: 0 auto;
+            width: min(100%, 1080px);
+        }
+
+        .surprise-intro,
+        .hero-card,
+        .info-card {
+            backdrop-filter: blur(16px);
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: var(--shadow);
+        }
+
+        .surprise-intro {
+            min-height: calc(100vh - 48px);
+            display: grid;
+            place-items: center;
+            text-align: center;
+            border-radius: 34px;
+            padding: 42px 24px;
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+
+        .surprise-mode.revealed .surprise-intro {
+            opacity: 0;
+            transform: scale(0.96);
+            pointer-events: none;
+            position: absolute;
+            inset: 0;
+        }
+
+        .eyebrow {
+            color: var(--yellow);
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .surprise-intro h1,
+        .hero-card h1 {
+            font-size: clamp(3rem, 8vw, 5.8rem);
+            line-height: 0.92;
+            margin-bottom: 16px;
+        }
+
+        .message {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.06rem;
+            line-height: 1.7;
+            color: var(--muted);
+        }
+
+        .surprise-button {
+            margin-top: 28px;
+            border: none;
+            border-radius: 999px;
+            padding: 18px 34px;
+            background: linear-gradient(135deg, var(--yellow), var(--pink), var(--peach));
+            color: #2d0d2f;
+            cursor: pointer;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            box-shadow: 0 22px 40px rgba(255, 95, 143, 0.34);
+            animation: floatGift 2.4s ease-in-out infinite;
+        }
+
+        .surprise-button-label {
+            display: inline-block;
+        }
+
+        .reveal-content {
+            opacity: 0;
+            transform: translateY(32px) scale(0.98);
+            pointer-events: none;
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .surprise-mode.revealed .reveal-content {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .hero-card {
+            text-align: center;
+            padding: 72px 28px 56px;
+            border-radius: 32px;
+            margin-bottom: 24px;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .primary-button,
+        .secondary-button {
+            border: none;
+            border-radius: 999px;
+            padding: 13px 22px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .primary-button {
+            background: linear-gradient(135deg, var(--pink), var(--peach));
+            color: white;
+            box-shadow: 0 14px 28px rgba(255, 95, 143, 0.28);
+        }
+
+        .secondary-button {
+            background: var(--card-strong);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .primary-button:hover,
+        .secondary-button:hover,
+        .surprise-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .wish-text {
+            margin-top: 20px;
+            color: var(--yellow);
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .wish-text.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .info-card {
+            padding: 28px 24px;
+            border-radius: 28px;
+        }
+
+        .cake-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            text-align: center;
+        }
+
+        .cake {
+            position: relative;
+            width: 160px;
+            height: 190px;
+        }
+
+        .candles {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .candle {
+            width: 12px;
+            height: 44px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #ffe27f, #ffcc4f);
+        }
+
+        .cake-top {
+            position: absolute;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 42px;
+            background: linear-gradient(180deg, #ff5f8f, #ff9f67);
+            border-radius: 28px 28px 16px 16px;
+            box-shadow: 0 10px 20px rgba(255, 95, 143, 0.28);
+        }
+
+        .cake-middle {
+            position: absolute;
+            top: 58px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 148px;
+            height: 58px;
+            background: linear-gradient(180deg, #7ad8ff, #4aa4ff);
+            border-radius: 20px;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+        }
+
+        .cake-bottom {
+            position: absolute;
+            top: 98px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 176px;
+            height: 70px;
+            background: linear-gradient(180deg, #8046f5, #6f2ee6);
+            border-radius: 24px 24px 20px 20px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+        }
+
+        .confetti-area {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 18px;
+            border-radius: 4px;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+            will-change: transform, opacity;
+            animation-name: confettiFall;
+            animation-timing-function: ease-out;
+            animation-iteration-count: 1;
+        }
+
+        @keyframes floatGift {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(120vh) rotate(720deg);
+            }
+        }
+
+        @media (max-width: 840px) {
+            .surprise-intro {
+                min-height: auto;
+                padding: 36px 22px;
+            }
+
+            .hero-card {
+                padding: 56px 24px 42px;
+            }
+
+            .message {
+                font-size: 1rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-row {
+                gap: 12px;
+            }
+
+            .primary-button,
+            .secondary-button {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .info-card {
+                padding: 24px;
+            }
+
+            .cake {
+                width: 140px;
+                height: 168px;
+            }
+
+            .background-glow {
+                width: 280px;
+                height: 280px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 16px;
+            }
+
+            .surprise-intro {
+                padding: 28px 18px;
+            }
+
+            .hero-card {
+                padding: 42px 18px 38px;
+            }
+
+            .surprise-intro h1,
+            .hero-card h1 {
+                font-size: clamp(2.4rem, 11vw, 4rem);
+            }
+
+            .message {
+                font-size: 0.98rem;
+            }
+
+            .surprise-button {
+                padding: 16px 28px;
+                font-size: 1.15rem;
+            }
+
+            .action-row {
+                gap: 10px;
+            }
+
+            .info-card {
+                padding: 20px;
+            }
+
+            .cake {
+                width: 120px;
+                height: 144px;
+            }
+
+            .background-glow-one {
+                top: -70px;
+                left: -30px;
+            }
+
+            .background-glow-two {
+                right: -70px;
+                bottom: -70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-glow background-glow-one"></div>
+    <div class="background-glow background-glow-two"></div>
+
+    <main class="birthday-page surprise-mode" id="birthdayPage">
+        <section class="surprise-intro" id="surpriseIntro">
+            <p class="eyebrow">Birthday Surprise</p>
+            <h1>Something is waiting for you</h1>
+            <p class="message">
+                Press the button and open the surprise.
+            </p>
+
+            <button id="surpriseButton" class="surprise-button" aria-label="Open birthday surprise">
+                <span class="surprise-button-label">Click Me</span>
+            </button>
+        </section>
+
+        <section class="reveal-content" id="revealContent">
+            <section class="hero-card">
+                <p class="eyebrow">A Special Day</p>
+                <h1>Happy Birthday!</h1>
+                <p class="message">
+                    Wishing you a day full of laughter, bright surprises, sweet moments, and memories
+                    that feel just as special as this reveal.
+                </p>
+
+                <div class="action-row">
+                    <button id="celebrateButton" class="primary-button">More Confetti</button>
+                    <button id="messageButton" class="secondary-button">Show Birthday Wish</button>
+                </div>
+
+                <p id="wishText" class="wish-text">
+                    May this year bring you confidence, peace, growth, and many unexpected good things.
+                </p>
+            </section>
+
+            <section class="content-grid">
+                <article class="info-card cake-card">
+                    <div class="cake">
+                        <div class="candles">
+                            <span class="candle"></span>
+                            <span class="candle"></span>
+                            <span class="candle"></span>
+                        </div>
+                        <div class="cake-top"></div>
+                        <div class="cake-middle"></div>
+                        <div class="cake-bottom"></div>
+                    </div>
+                    <h2>Make A Wish</h2>
+                    <p>Pause for one second and keep your best wish for the year ahead.</p>
+                </article>
+
+                <article class="info-card">
+                    <h2>For You</h2>
+                    <p>
+                        This version feels more like a surprise card: closed first, then revealed with
+                        motion, color, and celebration after one click.
+                    </p>
+                </article>
+            </section>
+        </section>
+
+        <section class="confetti-area" id="confettiArea" aria-hidden="true"></section>
+    </main>
+
+    <script>
+        const birthdayPage = document.getElementById("birthdayPage");
+        const surpriseButton = document.getElementById("surpriseButton");
+        const celebrateButton = document.getElementById("celebrateButton");
+        const messageButton = document.getElementById("messageButton");
+        const wishText = document.getElementById("wishText");
+        const confettiArea = document.getElementById("confettiArea");
+
+        const confettiColors = [
+            "#ff5f8f",
+            "#ff9f67",
+            "#ffd45a",
+            "#7ad8ff",
+            "#b067ff"
+        ];
+
+        function createConfettiBurst(count = 36) {
+            for (let i = 0; i < count; i += 1) {
+                const piece = document.createElement("span");
+                piece.className = "confetti";
+                piece.style.left = `${Math.random() * 100}%`;
+                piece.style.background = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                piece.style.animationDelay = `${Math.random() * 0.45}s`;
+                piece.style.animationDuration = `${2.8 + Math.random() * 1.8}s`;
+                confettiArea.appendChild(piece);
+
+                setTimeout(() => {
+                    piece.remove();
+                }, 4300);
+            }
+        }
+
+        function revealSurprise() {
+            birthdayPage.classList.add("revealed");
+            createConfettiBurst(64);
+
+            setTimeout(() => {
+                wishText.classList.add("show");
+            }, 600);
+        }
+
+        surpriseButton.addEventListener("click", revealSurprise, { once: true });
+
+        celebrateButton.addEventListener("click", () => {
+            createConfettiBurst(48);
+        });
+
+        messageButton.addEventListener("click", () => {
+            wishText.classList.toggle("show");
+        });
+    </script>
